@@ -1,5 +1,6 @@
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
+import java.net.UnknownHostException
 import java.util.regex.Pattern
 
 private var searchText: String? = null
@@ -8,12 +9,8 @@ private var choose: Int? = null
 private var isHelp = false
 
 private val videoFormats = HashMap<String, String>().apply {
-    put(".mkv", ".mkv")
-    put(".flv", ".flv")
-    put(".avi", ".avi")
-    put(".wmn", ".wmv")
-    put(".mp4", ".mp4")
-    put(".webm", ".webm")
+    put(".zip", ".zip")
+    put(".rar", ".rar")
 }
 
 fun main(args: Array<String>) {
@@ -58,43 +55,60 @@ fun main(args: Array<String>) {
         return
     }
 
-    val url = "http://hastidl.me/page/$page/?${if(searchText.isNullOrBlank()) "" else "s=$searchText"}"
-
-    println("\n$url\n")
+    val url = "http://worldsubtitle.us/page/$page/?${if(searchText.isNullOrBlank()) "" else "s=$searchText"}"
 
     try {
 
         val doc = Jsoup.connect(url).get()
 
-        val articleList = doc.select("article")
+        val articleList = doc.select(".cat-post")
 
         if(choose != null) {
 
             val element = articleList[choose!!-1]
 
-            val titleEl = element.select(".head h1 a")[0]
+            val titleEl = element.select(".cat-post-titel h2 a")[0]
             val cUrl = titleEl.attr("href")
+
+            System.out.print(ConsoleColors.BLUE_BOLD)
+            println("\n$cUrl\n")
+            System.out.print(ConsoleColors.RESET)
 
             val cDoc = Jsoup.connect(cUrl).get()
 
-            val linkList = cDoc.select("article a")
+            val linkList = cDoc.select(".single-dl a")
 
             linkList.forEachIndexed { index, linkEl ->
 
                 val link = linkEl.attr("href")
 
                 if(videoFormats.containsKey(link.getFormat())) {
-                    println(linkEl.text().enNum().fa2en().rmFa())
+
+                    val name = linkEl.text().enNum().fa2en().rmFa()
+
+                    System.out.print(ConsoleColors.WHITE_BOLD)
+                    println(if(name.isBlank())
+                        link.getFileName()
+                    else
+                        name)
+
+                    System.out.print(ConsoleColors.BLUE)
                     println(link)
+
                     println()
                 }
 
             }
+            System.out.print(ConsoleColors.RESET)
 
         }else {
 
+            System.out.print(ConsoleColors.BLUE_BOLD)
+            println("\n$url\n")
+            System.out.print(ConsoleColors.RESET)
+
             articleList.forEachIndexed { index, element ->
-                val titleEl = element.select(".head h1 a")[0]
+                val titleEl = element.select(".cat-post-titel h2 a")[0]
                 println("${index+1}. ${titleEl.text().enNum().fa2en().rmFa()}")
             }
 
@@ -106,6 +120,8 @@ fun main(args: Array<String>) {
                 println("Not Found")
             }
         }
+    }catch (uhe: UnknownHostException) {
+        println("Connection Error")
     }
 
 }
@@ -177,4 +193,13 @@ fun String.rmFa(): String {
     }
 
     return b.toString().trim().replace(Regex("\\s+"), " ")
+}
+
+fun String.getFileName(): String {
+    val index = lastIndexOf('/')
+    return if(index < 0)
+        ""
+    else {
+        substring(index+1, length).replace(getFormat(), "")
+    }
 }
