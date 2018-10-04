@@ -1,11 +1,3 @@
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
-import com.google.gson.reflect.TypeToken
-import com.google.gson.Gson
-import model.SiteModel
-
-
 fun String.getFormat(): String {
     val index = lastIndexOf('.')
     return if(index < 0 || index+1 == length)

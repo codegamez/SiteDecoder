@@ -74,7 +74,7 @@ class SiteDecoder(var targetSite: SiteModel? = null, var searchText: String? = n
                     else
                         element.select(targetSite!!.getPostTitleLinkSelector())[0]
 
-                    println("${index+1}. ${titleEl.text().enNum().fa2en().rmFa()}")
+                    println("${index+1}. ${titleEl.text().enNum()}")
                 }
 
             }
