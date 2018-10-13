@@ -14,7 +14,7 @@ class SiteDecoder(var targetSite: SiteModel? = null, var searchText: String? = n
         }
 
         var url = targetSite!!.getSearchUrl()
-        url = url.replace("%s", searchText ?: "")
+        url = url.replace("%s", searchText ?: "+")
         url = url.replace("%p", "$pageNumber")
 
         url = targetSite!!.getUrl() + url
@@ -44,7 +44,7 @@ class SiteDecoder(var targetSite: SiteModel? = null, var searchText: String? = n
 
                 val linkList = cDoc.select(targetSite!!.getPostDownloadLinkSelector() ?: "a")
 
-                linkList.forEachIndexed { index, linkEl ->
+                linkList.forEachIndexed { _, linkEl ->
 
                     val link = linkEl.attr("href")
 

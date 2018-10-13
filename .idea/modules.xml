@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MovieSiteDecoder.iml" filepath="$PROJECT_DIR$/MovieSiteDecoder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SiteDecoder.iml" filepath="$PROJECT_DIR$/SiteDecoder.iml" />
     </modules>
   </component>
 </project>

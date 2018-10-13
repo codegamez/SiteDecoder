@@ -1,3 +1,5 @@
+
+// extract extension name of a file path string - example: folder/image.(png)
 fun String.getFormat(): String {
     val index = lastIndexOf('.')
     return if(index < 0 || index+1 == length)
@@ -7,6 +9,7 @@ fun String.getFormat(): String {
     }
 }
 
+// convert persian number to english in string
 fun String.enNum(): String {
     val s = toCharArray()
     s.forEachIndexed { index, c ->
@@ -26,6 +29,7 @@ fun String.enNum(): String {
     return String(s)
 }
 
+// translate some persian word to english in string
 fun String.fa2en(): String {
     var s = this
 
@@ -54,6 +58,7 @@ fun String.fa2en(): String {
     return s
 }
 
+// remove all persian character from string
 fun String.rmFa(): String {
     val s = toCharArray()
     val b = StringBuilder()
@@ -67,6 +72,8 @@ fun String.rmFa(): String {
     return b.toString().trim().replace(Regex("\\s+"), " ")
 }
 
+
+// extract name of file from a file path string - example: folder/(image).png
 fun String.getFileName(): String {
     val index = lastIndexOf('/')
     return if(index < 0)
@@ -74,20 +81,4 @@ fun String.getFileName(): String {
     else {
         substring(index+1, length).replace(getFormat(), "").trim('.')
     }
-}
-
-fun getBaseUrl(): String {
-
-    var url = SiteDecoder::class.java.classLoader.getResource("data.txt").path
-    url = url.replaceFirst("jar:", "").trim('/')
-    url = url.replaceFirst("file:", "").trim('/')
-
-    val spliced = url.split('/')
-    url = "/"
-    for (i in 0 until spliced.size - 2) {
-        url += "${spliced[i]}/"
-    }
-    url = url.trimEnd('/')
-
-    return url
 }

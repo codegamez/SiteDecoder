@@ -21,7 +21,13 @@ fun main(args: Array<String>) {
         when(text) {
 
             "search", "-s" -> {
-                decoder.searchText = args.getOrNull(index+1)
+
+                var i = index + 1
+                decoder.searchText = ""
+                while (args.getOrNull(i)?.startsWith('-') == false) {
+                    decoder.searchText += args.getOrNull(i++) + "+"
+                }
+                decoder.searchText?.trim('+')
             }
 
             "-p", "--page" -> {
@@ -46,28 +52,28 @@ fun main(args: Array<String>) {
 
     }
 
-    if(isHelp) {
-        println("""
-    Move Site Decoder
+    when {
+        isHelp -> println("""
+        Site Decoder
 
-    (search, -s) - get a string for search in site
-    (-p, --page) - get page number
-    (-c, --choose) - get a number for selected post
-    (-h, --help) - this text you see now
-        """)
-    }else if(isData) {
-        println("Data File Path:")
-        print(ConsoleColors.BLUE)
-        println(dataPath)
-    }else {
-        decoder.decode()
+        (search, -s) - get a string as an argument for search in site
+        (-p, --page) - get page number as an argument
+        (-c, --choose) - get a number as an argument for selected post
+        (-h, --help) - this text you see now
+        (--data) - path of data.json file
+    """)
+        isData -> {
+            print(ConsoleColors.BLUE)
+            println(dataPath)
+        }
+        else -> decoder.decode()
     }
 
 }
 
 private lateinit var dataPath:String
 fun getSiteData(): Array<SiteModel> {
-    val path = getBaseUrl() + "/asset/data.json"
+    val path = SiteDecoder::class.java.classLoader.getResource("asset/data.json").path
     val file = File(path)
     val reader = FileReader(file)
     val dataJson = reader.readText()

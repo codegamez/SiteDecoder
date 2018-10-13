@@ -1,0 +1,21 @@
+[
+
+	{
+		"name" : "subtitle",
+		"url" : "http://worldsubtitle.us",
+		"format" : ["zip", "rar"],
+		"searchUrl" : "/page/%p/?s=%s",
+		"postSelector" : ".cat-post",
+		"postTitleLinkSelector" : ".cat-post-titel h2 a",
+		"postDownloadLinkSelector" : ".single-dl a"
+	},
+
+	{
+		"name" : "subcity",
+		"url" : "http://subtitlecity.net",
+		"format" : ["zip", "rar"],
+		"searchUrl" : "/page/%p/?s=%s",
+		"postTitleLinkSelector" : ".ppt a"
+	}
+
+]
