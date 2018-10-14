@@ -1,20 +1,21 @@
 import com.google.gson.Gson
 import model.SiteModel
 import model.get
-import java.io.File
 import java.io.FileReader
+import java.lang.NullPointerException
 
 private var isHelp = false
 private var isData = false
 private val decoder = SiteDecoder()
 private val siteList = getSiteData()
+private var dataPath:String? = null
 
 fun main(args: Array<String>) {
 
     args.forEachIndexed { index, text ->
 
         if(index == 0 && !text.startsWith('-')) {
-            decoder.targetSite = siteList.get(text)
+                decoder.targetSite = siteList?.get(text)
             return@forEachIndexed
         }
 
@@ -63,22 +64,41 @@ fun main(args: Array<String>) {
         (--data) - path of data.json file
     """)
         isData -> {
-            print(ConsoleColors.BLUE)
-            println(dataPath)
+            if(dataPath.isNullOrBlank()) {
+                print(ConsoleColors.RED)
+                println("data.json file not found.")
+            }else {
+                print(ConsoleColors.BLUE)
+                println(dataPath)
+            }
         }
-        else -> decoder.decode()
+        else -> {
+            if(siteList == null) {
+                print(ConsoleColors.RED)
+                println("data.json file not found.")
+            }else {
+                decoder.decode()
+            }
+
+        }
     }
 
 }
 
-private lateinit var dataPath:String
-fun getSiteData(): Array<SiteModel> {
-    val path = SiteDecoder::class.java.classLoader.getResource("asset/data.json").path
-    val file = File(path)
-    val reader = FileReader(file)
-    val dataJson = reader.readText()
-    dataPath = file.absolutePath
-    reader.close()
+fun getSiteData(): Array<SiteModel>? {
 
-    return Gson().fromJson<Array<SiteModel>>(dataJson, Array<SiteModel>::class.java)
+    try {
+        val uri = SiteDecoder::class.java.classLoader.getResource("asset/data.json").toURI()
+
+        val reader = FileReader(uri.path)
+        val dataJson = reader.readText()
+        reader.close()
+
+        dataPath = uri.path
+
+        return Gson().fromJson<Array<SiteModel>>(dataJson, Array<SiteModel>::class.java)
+    }catch (npe: NullPointerException) {
+        return null
+    }
+
 }
